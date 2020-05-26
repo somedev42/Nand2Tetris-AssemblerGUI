@@ -1,0 +1,28 @@
+/**
+ ** one iteration of the Booth Algorithm for multiplication
+ */
+
+CHIP Iteration {
+	IN a[16],b[16],h;
+    OUT out[16],carry;
+	
+	PARTS:
+	//prepare and initialize b which is the multiplicand
+	Negative(in=b,out=negativeb); //negative b
+	Initmultcand(in=b,out=bmulti); // prepare b for the action 
+	Initmultcand(in=negativeb,out=negativebmulit); // prepare negative b for the action
+	
+	//carries out the two actions and decides which one is taken
+	Add16(a=a,b=bmulti,out=add);
+	Add16(a=a,b=negativebmulit,out=sub);
+	Initsel(a=a[0],b=h,out=forsel); //selector to choose between the actions 
+	Mux4Way16(a=a,b=add,c=sub,d=a,sel=forsel,out=muxout,out[15]=muxcheck);
+	
+	//decides if the MSB is 1 or 0 after right shift
+	Rightone(in=muxout,out=rightone);
+	Rightzero(in=muxout,out=rightzero);
+	Mux16(a=rightzero,b=rightone,sel=muxcheck,out=out);	
+	
+	//outputs carry for the next iteration
+	And16(a=a,b=a,out[0]=carry);
+}

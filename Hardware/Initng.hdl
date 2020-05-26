@@ -1,0 +1,27 @@
+/**
+ ** inits the multiplier for the booth algorithm
+ ** for a negative input
+ **/
+
+CHIP Initng {
+	IN a[16];
+    OUT out[16];
+	
+	PARTS:
+	And(a=a[0],b=a[0],out=out[0]);
+	And(a=a[1],b=a[1],out=out[1]);
+	And(a=a[2],b=a[2],out=out[2]);
+	And(a=a[3],b=a[3],out=out[3]);
+	And(a=a[4],b=a[4],out=out[4]);
+	And(a=a[5],b=a[5],out=out[5]);
+	And(a=a[6],b=a[6],out=out[6]);
+	And(a=a[15],b=a[15],out=out[7]);
+	And(a=true,b=true,out=out[8]);
+	And(a=true,b=true,out=out[9]);
+	And(a=true,b=true,out=out[10]);
+	And(a=true,b=true,out=out[11]);
+	And(a=true,b=true,out=out[12]);
+	And(a=true,b=true,out=out[13]);
+	And(a=true,b=true,out=out[14]);
+	And(a=true,b=true,out=out[15]);  
+}

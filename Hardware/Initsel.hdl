@@ -1,0 +1,13 @@
+/**
+ ** outputs the two bits for the selector in a two bit variable
+ **/
+
+CHIP Initsel {
+	IN a[1],b[1];
+    OUT out[2];
+	
+	PARTS:
+	And(a=a,b=a,out=out[1]);
+	And(a=b,b=b,out=out[0]);
+	  
+}

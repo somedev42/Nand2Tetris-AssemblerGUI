@@ -1,0 +1,49 @@
+/**
+ ** Division
+ ** the algorithm does not work for signed numbers
+ ** we use two positive numbers for the algorithm
+ ** and decide the sign at the end
+ **/
+
+CHIP Division {
+    IN divd[16],divi[16];  
+    OUT out[16];
+
+    PARTS:
+	//Negate the dividend to get a positive number if necessary
+	Negative(in=divd,out=negdivd);
+	Mux16(a=divd,b=negdivd,sel=divd[15],out=divd1);
+	
+	//Negate the divisor to get a positive number if necessary
+	Negative(in=divi,out=negdivi);
+	Mux16(a=divi,b=negdivi,sel=divi[15],out=divi1);
+	
+	
+	//We need 16 iterations to get the result
+	IterationDiv(a=false,b=divd1,c=divi1,outa=itera1,outb=iterb1);
+	IterationDiv(a=itera1,b=iterb1,c=divi1,outa=itera2,outb=iterb2);
+	IterationDiv(a=itera2,b=iterb2,c=divi1,outa=itera3,outb=iterb3);
+	IterationDiv(a=itera3,b=iterb3,c=divi1,outa=itera4,outb=iterb4);
+	IterationDiv(a=itera4,b=iterb4,c=divi1,outa=itera5,outb=iterb5);
+	IterationDiv(a=itera5,b=iterb5,c=divi1,outa=itera6,outb=iterb6);
+	IterationDiv(a=itera6,b=iterb6,c=divi1,outa=itera7,outb=iterb7);
+	IterationDiv(a=itera7,b=iterb7,c=divi1,outa=itera8,outb=iterb8);
+	IterationDiv(a=itera8,b=iterb8,c=divi1,outa=itera9,outb=iterb9);
+	IterationDiv(a=itera9,b=iterb9,c=divi1,outa=itera10,outb=iterb10);
+	IterationDiv(a=itera10,b=iterb10,c=divi1,outa=itera11,outb=iterb11);
+	IterationDiv(a=itera11,b=iterb11,c=divi1,outa=itera12,outb=iterb12);
+	IterationDiv(a=itera12,b=iterb12,c=divi1,outa=itera13,outb=iterb13);
+	IterationDiv(a=itera13,b=iterb13,c=divi1,outa=itera14,outb=iterb14);
+	IterationDiv(a=itera14,b=iterb14,c=divi1,outa=itera15,outb=iterb15);
+	IterationDiv(a=itera15,b=iterb15,c=divi1,outa=itera16,outb=iterb16);
+	
+	//increment is necessary due to the algorithm
+	Inc16(in=iterb16,out=inc);
+	
+	//negate if the result is negative	
+	Negative(in=inc,out=incneg);
+	
+	//decide the sign with xor and select the right number for the output
+	Xor(a=divi[15],b=divd[15],out=sign);
+	Mux16(a=incneg,b=inc,sel=sign,out=out);
+}

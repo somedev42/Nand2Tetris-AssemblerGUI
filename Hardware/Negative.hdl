@@ -1,0 +1,13 @@
+/**
+ **Negates the number
+ **/
+
+CHIP Negative {
+    IN in[16];  
+    OUT out[16];
+
+    PARTS:
+	Add16(a=in,b=true,out=addout);
+	Not16(in=addout,out=out);
+   
+}

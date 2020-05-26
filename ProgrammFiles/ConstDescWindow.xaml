@@ -1,0 +1,20 @@
+﻿<Window x:Class="HackAssembler.View.ConstDescWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:HackAssembler.View"
+        xmlns:iconPacks="using:MahApps.Metro.IconPacks"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Construction Tables" Height="650" Width="1000">
+
+    <TabControl>
+        <TabItem Header="Old ALU">
+            <Image Source="/TableImages/ConstTable1.png"/>
+        </TabItem>
+        <TabItem Header="New ALU">
+            <Image Source="/TableImages/ConstTable2.png"/>
+        </TabItem>
+    </TabControl>
+</Window>

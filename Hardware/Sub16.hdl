@@ -1,0 +1,12 @@
+/**
+ ** subtracts b from a 
+ **/
+
+CHIP Sub16 {
+    IN a[16],b[16];  
+    OUT out[16];
+
+    PARTS:
+	Negative(in=b,out=bneg);
+	Add16(a=a,b=bneg,out=out);
+}

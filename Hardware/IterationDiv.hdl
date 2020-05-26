@@ -1,0 +1,29 @@
+/**
+ ** one iteration for the division
+ **/
+
+CHIP IterationDiv {
+    IN a[16],b[16],c[16];  
+    OUT outa[16],outb[16];
+
+    PARTS:
+	//a and b are treated as a combined 32 bit number 
+	//first step is to shift left
+	//if the MSB of b is one, then we increment a 
+	//"to shift the MSB of b into the LSB of a"
+	Leftzero(in=a,out=ashift); 
+	Leftzero(in=b,out=bshift);
+	Inc16(in=ashift,out=ashiftinc);
+	Mux16(a=ashift,b=ashiftinc,sel=b[15],out=op1);
+	
+	//to add or substract depends on the sign of a
+	Add16(a=op1,b=c,out=add1);
+	Sub16(a=op1,b=c,out=sub1);
+	
+	Mux16(a=sub1,b=add1,sel=a[15],out=outa); // output of a for the next iteration
+	Mux16(a=sub1,b=add1,sel=a[15],out[15]=sel2);
+	
+	//the LSB of the shifted b input depends on the sign of outa
+	Inc16(in=bshift,out=bshiftinc);
+	Mux16(a=bshift,b=bshiftinc,sel=sel2,out=outb);
+}

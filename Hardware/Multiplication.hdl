@@ -1,0 +1,33 @@
+/**
+ ** Multiplication
+ ** The product is 16 bit, which means the numerical values of the 
+ ** factors must not be greater than 7 bits 
+ ** The eighth bit is for the sign
+ */
+
+CHIP Multiplication {
+    IN a[16],b[16];  
+    OUT out[16];
+
+    PARTS:
+	//Init
+	Initng(a=a,out=initng); // Initialize for a negative number
+    Initps(a=a,out=initps); // Initialize for a positive number
+	Mux16(a=initps,b=initng,sel=a[15],out=outinit); // select if positive or negative
+	
+	//Iteration
+	Iteration(a=outinit,b=b,h=false,out=iter1,carry=h1);
+	Iteration(a=iter1,b=b,h=h1,out=iter2,carry=h2);
+	Iteration(a=iter2,b=b,h=h2,out=iter3,carry=h3);
+	Iteration(a=iter3,b=b,h=h3,out=iter4,carry=h4);
+	Iteration(a=iter4,b=b,h=h4,out=iter5,carry=h5);
+	Iteration(a=iter5,b=b,h=h5,out=iter6,carry=h6);
+	Iteration(a=iter6,b=b,h=h6,out=iter7,carry=h7);
+	Iteration(a=iter7,b=b,h=h7,out=iter8,carry=h8);
+	
+	//Increment is needed, if a is negative due to the boot algorithm
+	Inc16(in=iter8,out=inc);
+	
+	//selects the output based on the sign 
+	Mux16(a=iter8,b=inc,sel=a[15],out=out);
+	}

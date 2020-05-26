@@ -1,0 +1,88 @@
+/**
+ ** The  new ALU (Arithmetic Logic Unit).
+ ** additional arithmetic operations
+ **/
+
+// Implementation: the ALU logic manipulates the x and y inputs
+// and operates on the resulting values, as follows
+
+// if (sqrx == 1) set x = x^2     
+// if (nx == 1)   set x = -x       
+// if (sqry == 1) set y = y^2        
+// if (ny == 1)   set y = -y  
+     
+// if (f == 000)   set out = x + y  
+// if (f == 001)   set out = x - y 
+// if (f == 010)   set out = x * y  
+// if (f == 011)   set out = x / y 
+// if (f == 100)   set out = x squared
+// if (f == 101)   set out = y squared 
+
+ 
+// if (out == 0)  set zr = 1
+// if (out < 0)   set ng = 1
+
+CHIP newALU {
+    IN  
+        x[16], y[16],  	// 16-bit inputs        
+        sqrx, 			// square the x input?
+        nx, 			// negate the x input?
+        sqry, 			// sqaure the y input?
+        ny, 			// negate the y input?
+        f[3];  			// compute out = x + y or x - y or x * y or x / y
+        
+
+    OUT 
+        out[16], // 16-bit output
+        zr, // 1 if (out == 0), 0 otherwise
+        ng; // 1 if (out < 0),  0 otherwise
+
+    PARTS:
+	//square x
+	Multiplication(a=x,b=x,out=xsqr);
+	
+	//negate the x input and x squared
+	Negative(in=x,out=xneg);
+	Negative(in=xsqr,out=xsqrneg);
+	
+	//decide which x config is needed
+	Mux4Way16(a=x,b=xneg,c=xsqr,d=xsqrneg,sel[1]=sqrx,sel[0]=nx,out=xforf);
+	
+	//square y
+	Multiplication(a=y,b=y,out=ysqr);
+	
+	//negate the y input and y squared
+	Negative(in=y,out=yneg);
+	Negative(in=ysqr,out=ysqrneg);
+	
+	//decide which y config is needed
+	Mux4Way16(a=y,b=yneg,c=ysqr,d=ysqrneg,sel[1]=sqry,sel[0]=ny,out=yforf);
+	
+	//functions
+	Add16(a=xforf,b=yforf,out=fadd);
+	Sub16(a=xforf,b=yforf,out=fsub);
+	Multiplication(a=xforf,b=yforf,out=fmul);
+	Division(divd=xforf,divi=yforf,out=fdiv);
+	
+	//Multiplexer for the functions 000 to 011
+	Mux4Way16(a=fadd,b=fsub,c=fmul,d=fdiv,sel=f[0..1],out=fgroup1); 
+	
+	//Multiplexer for the functions 100 to 101
+	Mux16(a=xsqr,b=ysqr,sel=f[0],out=fgroup2);
+	
+	//Multiplexer for the ALU output and to check for zr and ng
+	Mux16(a=fgroup1,b=fgroup2,sel=f[2],out=out); //ALU output
+	Mux16(a=fgroup1,b=fgroup2,sel=f[2],out[0..7]=outlb); //split the output into two bytes to use the Or8Way
+	Mux16(a=fgroup1,b=fgroup2,sel=f[2],out[8..15]=outhb); //split the output into two bytes to use the Or8Way
+	Mux16(a=fgroup1,b=fgroup2,sel=f[2],out[15]=outMSB); //check MSB if the output is positive or negative
+	
+	//check if the output is zero
+	Or8Way(in=outlb,out=or1);
+	Or8Way(in=outhb,out=or2);
+	Or(a=or1,b=or2,out=notzr);
+	Not(in=notzr,out=zr);
+	
+	//check if the output is negative
+	And(a=outMSB,b=outMSB,out=ng);	
+	
+	}

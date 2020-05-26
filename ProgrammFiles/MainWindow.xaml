@@ -1,0 +1,82 @@
+﻿<Window x:Class="HackAssembler.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviors="clr-namespace:HackAssembler.Behaviors"
+        xmlns:view="clr-namespace:HackAssembler.View"
+        xmlns:local="clr-namespace:HackAssembler" 
+        mc:Ignorable="d"
+        DataContext="{Binding Main, Source={StaticResource Locator}}"
+        Title="HackAssembler" Height="500" Width="800"
+        ResizeMode="NoResize"      
+        WindowStartupLocation="CenterScreen">
+    <i:Interaction.Behaviors>
+        <!-- TwoWay binding is necessary, otherwise after user closed a window directly, it cannot be opened again -->
+        <behaviors:OpenCloseWindowBehavior WindowType="view:ConstDescWindow" Open="{Binding ConstDescOpen, Mode=TwoWay}" />
+    </i:Interaction.Behaviors>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="0.5*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Button x:Name="LoadFileButton" Width="70" Height="30" Content="Load File" Command="{Binding LoadFileCmd}"/>
+            <Button x:Name="SaveFileButton" Grid.Row="1" Width="70" Height="30" Content="Save File" Command="{Binding SaveFileCmd}" CommandParameter="{Binding AsmFileName}"/>
+            <Button Content="Construction Tables" Grid.Row="2"  Width="120" Height="30" Command="{Binding OpenConstDescCmd}" CommandParameter="True" />
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Button x:Name="AssembleButton" Width="70" Height="30" Content="Assemble" Command="{Binding AssembleCmd}" CommandParameter="{Binding Code}"/>
+        </Grid>
+        
+
+        <Grid Grid.Column="2" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="4*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*" />
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="0.5*" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.ColumnSpan="2" Text="Hack file in binary expression" TextAlignment="Center" Margin="2,2,2,2"/>
+            <TextBox Grid.ColumnSpan="2"  Grid.Row="1" Text="{Binding BinaryCode}" Margin="10,10,10,10" BorderThickness="1" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"/>
+        </Grid>
+        <!--<ListBox x:Name="Memory" Grid.RowSpan="2" ItemsSource="{Binding SymbolTable}" />-->
+
+        <Grid Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="4*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.5*" />
+                <RowDefinition Height="8*" />
+                <RowDefinition Height="1.2*" />
+            </Grid.RowDefinitions>
+            <TextBlock Text="File:" TextAlignment="Center" Margin="2,2,2,2"/>
+            <TextBox Grid.Column="2" Text="{Binding AsmFileName}" Margin="2,2,0,2"/>
+            <TextBox Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Code}" Margin="10,10,0,10" BorderThickness="1" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"/>
+            <TextBox Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding Error_Msg}" TextAlignment="Center" Margin="2,2,2,2" IsReadOnly="True" HorizontalScrollBarVisibility="Auto"/>
+        </Grid>
+    </Grid>
+</Window>

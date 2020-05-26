@@ -1,0 +1,15 @@
+/**
+ ** we still use the built-in ROM and Memory. 
+ ** the newCPU has our new ALU integrated.
+ */
+
+CHIP newComputer {
+
+    IN reset;
+
+    PARTS:
+	
+    ROM32K(address=pc, out=instruction);
+	newCPU(inM=memOut,instruction=instruction,reset=reset,outM=outM,writeM=writeM,addressM=addressM,pc=pc); // the old CPU is replaced with the new one.
+	Memory(in=outM,load=writeM,address=addressM,out=memOut);
+}
